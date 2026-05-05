@@ -20,6 +20,9 @@ public class SimilarityCalc {
      */
     public SimilarityCalc(double interestWeight, double habitWeight, double goalWeight) {
         // TODO
+        this.interestWeight = interestWeight;
+        this.habitWeight = habitWeight;
+        this.goalWeight = goalWeight;
     }
 
     /**
@@ -34,8 +37,19 @@ public class SimilarityCalc {
      * and addAll() for union.
      */
     public double jaccardSimilarity(Set<String> set1, Set<String> set2) {
-        // TODO
-        return 0.0;
+        if (set1.isEmpty() && set2.isEmpty()) {
+            return 0.0;
+        }
+
+        //hashests for intersection and union
+        Set<String> intersection = new HashSet<>(set1);
+        Set<String> union = new HashSet<>(set1);
+
+
+        intersection.retainAll(set2);
+        union.addAll(set2);
+
+        return (double) intersection.size()/ union.size();
     }
 
     /**
@@ -49,6 +63,8 @@ public class SimilarityCalc {
      */
     public double computeScore(UserProfile u1, UserProfile u2) {
         // TODO
-        return 0.0;
+        return (interestWeight * jaccardSimilarity(u1.getInterests(), u2.getInterests()))
+                + (habitWeight * jaccardSimilarity(u1.getHabits(), u2.getHabits()))
+                + (goalWeight * jaccardSimilarity(u1.getGoals(), u2.getGoals()));
     }
 }
