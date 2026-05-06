@@ -5,32 +5,45 @@ import java.awt.*;
 public class ProfilePanel extends JPanel {
 
     public JTextField nameField;
-    public JTextField interestsField;
-    public JTextField habitsField;
-    public JTextField goalsField;
+    public JList<String> interestsList;
+    public JList<String> habitsList;
+    public JList<String> goalsList;
     public JButton addButton;
 
     public ProfilePanel() {
-        // simple grid layout: 5 rows, 2 columns
-        setLayout(new GridLayout(5, 2, 5, 5));
+        // border layout to hold the form and the button nicely
+        setLayout(new BorderLayout(10, 10));
 
-        // initialize the text boxes
+        // grid layout for the inputs
+        JPanel grid = new JPanel(new GridLayout(4, 2, 5, 5));
+
         nameField = new JTextField();
-        interestsField = new JTextField();
-        habitsField = new JTextField();
-        goalsField = new JTextField();
-        addButton = new JButton("add user");
 
-        // add everything to the panel
-        add(new JLabel(" name:"));
-        add(nameField);
-        add(new JLabel(" interests (comma separated):"));
-        add(interestsField);
-        add(new JLabel(" habits (comma separated):"));
-        add(habitsField);
-        add(new JLabel(" goals (comma separated):"));
-        add(goalsField);
-        add(new JLabel("")); // empty space to push button to the right
-        add(addButton);
+        // predefined options for people to click
+        String[] interestOptions = {"coding", "espresso", "fishing", "design", "gaming", "art", "music"};
+        String[] habitOptions = {"morning person", "night owl", "gym", "reading", "cooking"};
+        String[] goalOptions = {"internship", "product management", "graduate", "travel", "startup"};
+
+        interestsList = new JList<>(interestOptions);
+        habitsList = new JList<>(habitOptions);
+        goalsList = new JList<>(goalOptions);
+
+        // add scroll bars to the lists so they fit nicely
+        grid.add(new JLabel(" name:"));
+        grid.add(nameField);
+
+        grid.add(new JLabel(" interests (ctrl/cmd to pick many):"));
+        grid.add(new JScrollPane(interestsList));
+
+        grid.add(new JLabel(" habits (ctrl/cmd to pick many):"));
+        grid.add(new JScrollPane(habitsList));
+
+        grid.add(new JLabel(" goals (ctrl/cmd to pick many):"));
+        grid.add(new JScrollPane(goalsList));
+
+        add(grid, BorderLayout.CENTER);
+
+        addButton = new JButton("add user");
+        add(addButton, BorderLayout.SOUTH);
     }
 }
