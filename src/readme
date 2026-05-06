@@ -1,0 +1,52 @@
+social network analyzer
+
+a java swing application that builds a social network graph, recommends new friends, and detects
+ distinct friend groups based on shared interests, habits, and goals.
+
+features:
+- user profiles: create users by selecting traits from predefined lists (interests, habits, goals).
+- network generation: automatically connects users who meet a minimum compatibility threshold.
+- friend recommendations:
+  - direct: suggests your closest matches based on shared traits.
+  - triadic: suggests friends-of-friends who share mutual connections with you.
+- community detection: automatically groups the network into distinct cliques/clusters using algorithmic trend simulation.
+- pre-loaded data: includes a load test data button that generates 10 distinct profiles to easily test the algorithms.
+
+how to run:
+1. compile all .java files in the src directory.
+2. run mainframe.java. this is the entry point that launches the swing ui.
+3. once the window opens:
+   - click load test data (or add your own users manually on the left).
+   - click build graph to calculate the math and connect the users.
+   - select a user from the target dropdown menu.
+   - click get recs or find clusters to view the algorithmic outputs.
+
+how it works:
+
+1. the data structure
+the application uses an adjacency list graph representation. each userprofile acts as a node. the connections between people are edge objects, which hold a weight representing exactly how compatible the two people are.
+
+2. calculating compatibility
+to figure out if two people should be connected, the app uses jaccard similarity. it looks at both users sets of interests, habits, and goals, and calculates: (number of shared traits) / (total unique traits).
+
+3. making recommendations
+direct matches: grabs all edges connected to the target user, sorts them by weight (highest to lowest), and returns the top results.
+friends of friends (triadic closure): looks at the target user's current friends, then looks at their friends. it creates a tally of how many mutual friends the target user shares with these 2nd-degree connections, sorting them to find the best people you may know.
+
+4. finding friend groups
+the app uses a label propagation algorithm to find communities.
+on iteration 0, everyone starts with their own name as their team label.
+every round, each person looks at all their friends, tallies up the weights of their friends labels,
+ and adopts the most popular one.
+
+this repeats until the network stabilizes and nobody changes their label. everyone holding the same
+ label at the end is considered one cluster.
+ (a fallback BFS search method is also included in the code to find completely disconnected islands of users).
+
+technical assumptions made:
+to make the algorithms function reliably, a few core assumptions were built into the system:
+
+1. unique names: the system assumes every user has a completely unique name. the equals() and hashcode() methods in the user profile are based purely on the name string to map users correctly in the graph's hashmap.
+2. equal weighting: when calculating similarity, the app currently weighs interests, habits, and goals equally (a 1.0 multiplier for each).
+3. graph threshold: the graph builder requires a minimum similarity score of 10% (0.1) for an edge to be created. if two people share absolutely nothing, they remain completely disconnected.
+4. iteration caps: the cluster detector limits label propagation to a maximum of 10 iterations to prevent infinite loops in highly connected, perfectly balanced graphs.
