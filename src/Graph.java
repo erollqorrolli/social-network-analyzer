@@ -82,9 +82,7 @@ public class Graph {
     }
 
     /**
-     * TODO: Return ALL edges in the graph (no duplicates).
-     * Since each edge is stored in two adjacency lists, be careful not to double-count.
-     * Hint: use a Set<Edge> or only add edges where user1 < user2 alphabetically.
+     *  Return ALL edges in the graph - no duplicates.
      */
     public List<Edge> getAllEdges() {
         List<Edge> edges = new ArrayList<>();

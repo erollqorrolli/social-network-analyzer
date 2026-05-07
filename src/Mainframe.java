@@ -39,6 +39,7 @@ public class Mainframe extends JFrame {
         JButton buildGraphBtn = new JButton("build graph");
         JButton recsBtn = new JButton("get recs");
         JButton clustersBtn = new JButton("find clusters");
+        JButton statsBtn = new JButton("network stats"); // <-- NEW BUTTON HERE
 
         topPanel.add(helpBtn);
         topPanel.add(dummyDataBtn);
@@ -47,6 +48,7 @@ public class Mainframe extends JFrame {
         topPanel.add(userDropdown);
         topPanel.add(recsBtn);
         topPanel.add(clustersBtn);
+        topPanel.add(statsBtn); // add it to the screen
 
         // put the panels in the window
         add(topPanel, BorderLayout.NORTH);
@@ -91,6 +93,13 @@ public class Mainframe extends JFrame {
             }
         });
 
+        // wire up our new stats button
+        statsBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                runStats();
+            }
+        });
+
         pack();
         setLocationRelativeTo(null); // center the window on screen
     }
@@ -102,7 +111,8 @@ public class Mainframe extends JFrame {
                 "2. click 'build graph' to connect everyone together.\n" +
                 "3. pick a person from the 'target' dropdown menu.\n" +
                 "4. click 'get recs' to see who they should be friends with.\n" +
-                "5. click 'find clusters' to see the overall friend groups.";
+                "5. click 'find clusters' to see the overall friend groups.\n" +
+                "6. click 'network stats' to see the math behind the graph.";
         JOptionPane.showMessageDialog(this, msg, "instructions", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -138,7 +148,7 @@ public class Mainframe extends JFrame {
         }
 
         // tech/product focused group
-        UserProfile u1 = new UserProfile("eroll",
+        UserProfile u1 = new UserProfile("paul",
                 new HashSet<>(Arrays.asList("coding", "espresso", "fishing")),
                 new HashSet<>(Arrays.asList("night owl", "gym")),
                 new HashSet<>(Arrays.asList("product management", "internship")));
@@ -293,6 +303,28 @@ public class Mainframe extends JFrame {
             for (int i = 0; i < groupMembers.size(); i++) {
                 resultsPanel.print(" - " + groupMembers.get(i).getName());
             }
+        }
+    }
+
+    // runs the network stats to show off the graph properties
+    private void runStats() {
+        if (currentGraph.getAllNodes().isEmpty()) {
+            resultsPanel.print("please build a graph first!");
+            return;
+        }
+
+        NetworkStats stats = new NetworkStats(currentGraph);
+
+        resultsPanel.print("\n--- network properties ---");
+        resultsPanel.print("average degree: " + String.format("%.2f", stats.averageDegree()));
+        resultsPanel.print("graph density: " + String.format("%.2f", stats.graphDensity()));
+        resultsPanel.print("average clustering: " + String.format("%.2f", stats.averageClusteringCoefficient()));
+
+        List<Edge> bridges = stats.findBridges();
+        resultsPanel.print("\ncritical bridges found: " + bridges.size());
+        for (int i = 0; i < bridges.size(); i++) {
+            Edge b = bridges.get(i);
+            resultsPanel.print(" - connects " + b.getUser1().getName() + " and " + b.getUser2().getName());
         }
     }
 

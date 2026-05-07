@@ -27,7 +27,7 @@ public class Edge {
     }
 
     /**
-     * given an edge and a user, returns the other user. This is useful for traversal.
+     * given an edge and a user, returns the other user.
      * Throws illegal argument exception if the user isnt part of edge.
      */
     public UserProfile getOther(UserProfile user) {
